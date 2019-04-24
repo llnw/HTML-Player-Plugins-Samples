@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <link href="videojs-share.css" rel="stylesheet">
+  </head> 
+
+  <body>
+    Sample showcasing Limelight HTML Player with videojs-share plugin (https://www.npmjs.com/package/videojs-share) 
+    <br/><br/>
+    <div id="limelight_player_878582"></div>
+    <script src="https://video.limelight.com/player/limelightjs-player.js?orgId=6858d055ed614d25a47de586a30d1275"></script>
+    <script>
+        LimelightPlayerUtil.embed({
+        "height": 480,
+        "width": 720,
+        "mediaId": "4138acb440124a33a0e719fa47092c57",
+        "playerId": "limelight_player_878582",
+        "playerForm": "LVPPlayer"
+        });
+    </script>
+
+    <script>
+      function loadScriptAsync (url, cb) {
+        var head = document.getElementsByTagName('head')[0];
+        var el = document.createElement('script');
+        el.onload = el.onreadystatechange = function () {
+            if (el.readyState &&
+                el.readyState !== 'complete' &&
+                el.readyState !== 'loaded')
+            {
+                return false;
+            }
+            el.onload = el.onreadystatechange = null;
+            cb();
+        };
+        el.async = true;
+        el.src = url;
+        head.insertBefore(el, head.firstChild);
+      }
+
+      limelightPlayerCallback = function(playerId, eventName, data)
+      {   
+        var shareOptions = {
+          // NOTE: 'whatsapp', 'viber', 'messenger' works only on phone
+          socials: ['fbFeed', 'tw', 'reddit', 'gp', 'messenger', 'linkedin', 'telegram', 'whatsapp', 'viber', 'vk', 'ok', 'mail'],
+          url: window.location.href,
+          title: 'videojs-share',
+          description: 'video.js share plugin',
+          image: 'https://media.limelight.com/designimages/llnw_darklogo_2017.png',
+
+          // required for Facebook and Messenger
+          fbAppId: '12345',
+          // optional for Facebook
+          // redirectUri: window.location.href + '#close',
+
+          // optional for VK
+          // isVkParse: true,
+        }
+
+        if (eventName == 'onPlayerLoad' && playerId === 'limelight_player_878582' )
+        {
+          var originalVideojs = window.videojs;
+          var vjs = LimelightPlayer.doGetVjs();
+          window.videojs = vjs;
+          loadScriptAsync('videojs-share.js', function () {
+              LimelightPlayer.doGetVjsPlayer().share(shareOptions);
+          });
+        }
+      }
+    </script>
+
+  </body>
+</html>
